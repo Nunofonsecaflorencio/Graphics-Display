@@ -9,18 +9,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 /**
  * 
  * @author Nuno Fonseca
+ * Core team
  */
 public class Screen extends JPanel implements ActionListener{
     
-    private final int TILE_SIZE = 16;
+    private final int TILE_SIZE = 8;
     private final int LINE_SIZE = TILE_SIZE / 5;
-    private final int ROWS = 48, COLS = 64;
+    private final int ROWS = 48 * 2, COLS = 64 * 2;
     
     private final int WIDTH = (TILE_SIZE + LINE_SIZE) * COLS - LINE_SIZE;
     private final int HEIGHT = (TILE_SIZE + LINE_SIZE) * ROWS - LINE_SIZE;
@@ -32,14 +35,23 @@ public class Screen extends JPanel implements ActionListener{
     private final int DELAY = 60 / 1000;
     private Timer timer;
     
-    int mx, my;
+    int mx = 0, my = 0;
     
     public Screen() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setBackground(TILE_OFF_COLOR);
         
         timer = new Timer(DELAY, this);
+        timer.start();
         
+        this.addMouseMotionListener(new MouseMotionAdapter(){
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mx = e.getX();
+                my = e.getY();
+            } 
+        
+        });
     }
 
     @Override
@@ -58,8 +70,7 @@ public class Screen extends JPanel implements ActionListener{
         Graphics2D g2d = (Graphics2D) g;
         drawGridLines(g2d);
         
-        plotLine(4, 6, 60, 32, g2d);
-        
+        plotLine(COLS / 2, ROWS / 2, getI(mx), getI(my), g2d);
         
         g2d.dispose();
     }
