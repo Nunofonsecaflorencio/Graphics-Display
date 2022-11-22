@@ -23,7 +23,7 @@ public class Screen extends JPanel implements ActionListener{
     
     private final int TILE_SIZE = 8;
     private final int LINE_SIZE = TILE_SIZE / 5;
-    private final int ROWS = 48 * 2, COLS = 64 * 2;
+    private final int ROWS = 48, COLS = 64;
     
     private final int WIDTH = (TILE_SIZE + LINE_SIZE) * COLS - LINE_SIZE;
     private final int HEIGHT = (TILE_SIZE + LINE_SIZE) * ROWS - LINE_SIZE;
@@ -36,6 +36,8 @@ public class Screen extends JPanel implements ActionListener{
     private Timer timer;
     
     int mx = 0, my = 0;
+    
+    Donut donut = new Donut(COLS, ROWS);
     
     public Screen() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -61,7 +63,6 @@ public class Screen extends JPanel implements ActionListener{
     }
 
     private void update() {
-
     }
 
     @Override
@@ -70,7 +71,9 @@ public class Screen extends JPanel implements ActionListener{
         Graphics2D g2d = (Graphics2D) g;
         drawGridLines(g2d);
         
-        plotLine(COLS / 2, ROWS / 2, getI(mx), getI(my), g2d);
+        //plotLine(COLS / 2, ROWS / 2, getI(mx), getI(my), g2d);
+        g2d.setColor(TILE_ON_COLOR);
+        donut.draw(this, g2d);
         
         g2d.dispose();
     }
@@ -88,7 +91,7 @@ public class Screen extends JPanel implements ActionListener{
         }
     }
 
-    private void plotPoint(int i, int j, Graphics2D g2d) {
+    public void plotPoint(int i, int j, Graphics2D g2d) {
         g2d.setColor(TILE_ON_COLOR);
         g2d.fillRect(getLoc(i), getLoc(j), TILE_SIZE, TILE_SIZE);
     }
@@ -149,6 +152,11 @@ public class Screen extends JPanel implements ActionListener{
             else
                 plotLineHigh(x0, y0, x1, y1, g2d);
         }
+    }
+    
+    float remap(float source, float sourceFrom, float sourceTo, float targetFrom, float targetTo)
+    {
+            return targetFrom + (source-sourceFrom)*(targetTo-targetFrom)/(sourceTo-sourceFrom);
     }
     
     private int getLoc(int i){
